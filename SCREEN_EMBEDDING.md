@@ -86,10 +86,18 @@ The screen is divided into a grid of cells:
    - Press **SPACE** again to stop recording
    - Video is automatically saved with timestamp
 
-5. **Verify (using existing VeriLight tools):**
-   - Find your video in `recordings/recording_YYYYMMDD_HHMMSS.mp4`
-   - Process with VeriLight's verification pipeline to extract the embedded message
-   - The "hello world" message should be recoverable from the facial video
+5. **Test your recording:**
+   ```bash
+   python test_recording.py recordings/recording_YYYYMMDD_HHMMSS.mp4
+   ```
+
+   This will:
+   - Analyze the video for the BPSK pattern
+   - Check if the 3 Hz frequency is detectable
+   - Generate analysis plots showing brightness variations
+   - Give you a PASS/FAIL result
+
+   If the test passes, the embedding is working! ✅
 
 ### Tips for Best Results
 
@@ -142,9 +150,11 @@ For a typical 1920x1080 screen:
 - Bits per cell: 12 (4 seconds × 3 Hz)
 - **Total capacity: ~4,560 bits (~570 characters)**
 
-## Testing Your Setup
+## Testing and Verification
 
-Before recording a full session, verify everything works:
+### Before Recording - System Tests
+
+Verify your setup before recording:
 
 ```bash
 # Test camera detection
@@ -154,10 +164,60 @@ python test_camera.py
 python test_screen_embedding.py
 ```
 
+### After Recording - Pattern Detection Test
+
+Once you have a recording, test if the pattern is visible:
+
+```bash
+python test_recording.py recordings/your_video.mp4
+```
+
+**What this does:**
+- Analyzes brightness variations in the video
+- Performs FFT to detect frequency peaks
+- Looks for the expected 3 Hz BPSK pattern
+- Generates plots showing the analysis
+- Gives you a clear PASS/FAIL result
+
+**Example output:**
+```
+✅ SUCCESS: BPSK pattern detected in video!
+
+The screen embedding is working. The 3.02 Hz
+blinking pattern is visible in the recorded facial video.
+```
+
+**If the test fails:**
+- Try recording in a darker room
+- Sit closer to the screen (2-3 feet)
+- Increase screen brightness
+- Record for longer duration (15-30 seconds)
+- Check camera exposure settings
+
+### Full Verification (Advanced)
+
+For complete message extraction using VeriLight's full pipeline:
+
+```bash
+python verify.py recordings/your_video.mp4 output_folder/ --visualization
+```
+
+This runs the complete VeriLight verification:
+- Localization (finds corner markers)
+- Signal demodulation
+- Error correction decoding
+- Feature extraction
+- Hash comparison
+- Message recovery
+
+**Note:** The full pipeline is complex and designed for the hardware SLM system.
+For screen-based embedding, start with `test_recording.py` to verify the pattern is visible.
+
 ## File Overview
 
 - **screen_embedding.py** - Display only (no recording)
 - **screen_embedding_record.py** - Display + webcam recording ⭐ (recommended)
+- **test_recording.py** - Test recorded videos for pattern detection 🔍 (important!)
 - **test_screen_embedding.py** - Unit tests for encoding logic
 - **test_camera.py** - Test camera availability
 - **SCREEN_EMBEDDING.md** - This documentation
