@@ -8,7 +8,7 @@ Instead of requiring specialized hardware (Texas Instruments DLPDLCR230NPEVM + R
 
 ## Quick Start
 
-### Basic Usage
+### Display Only (No Recording)
 
 ```bash
 python screen_embedding.py
@@ -20,6 +20,25 @@ This will:
 3. The pattern continuously loops and can be captured in video
 
 Press 'q' to quit the display.
+
+### Display + Recording (Recommended)
+
+```bash
+python screen_embedding_record.py
+```
+
+This will:
+1. Prompt you for a message (defaults to "hello world")
+2. Detect available cameras and let you select one
+3. Display the BPSK pattern fullscreen
+4. Show a webcam preview window
+5. Let you record video with the pattern embedded
+
+**Controls:**
+- **SPACE** - Start/stop recording
+- **Q** - Quit
+
+Recordings are saved to the `recordings/` directory as MP4 files.
 
 ## How It Works
 
@@ -42,26 +61,43 @@ The screen is divided into a grid of cells:
 
 ## Example Workflow
 
-### Recording Video with Embedding
+### Complete Recording Session
 
-1. **Start the screen embedding:**
+1. **Start the recording system:**
    ```bash
-   python screen_embedding.py
+   python screen_embedding_record.py
    ```
 
-2. **Position the subject:**
-   - Place the person in front of the laptop screen
-   - The screen pattern will illuminate their face
-   - Ensure good framing for facial capture
+2. **Configure settings:**
+   - Enter your message (e.g., "hello world")
+   - Select camera if multiple are available
+   - Choose output directory (default: `recordings/`)
 
-3. **Record video:**
-   - Use the same camera setup as normal VeriLight
-   - Record the person's face with the screen pattern visible in the background/lighting
-   - The encoded data is embedded through the light reflecting off their face
+3. **Position yourself:**
+   - Sit in front of the laptop screen
+   - Make sure your face is visible in the preview window
+   - The screen pattern will illuminate your face
+   - Darker room = better embedding visibility
 
-4. **Verify (using existing VeriLight tools):**
-   - The recorded video can be processed with VeriLight's verification pipeline
-   - Extract and decode the embedded "hello world" message
+4. **Record:**
+   - Press **SPACE** to start recording
+   - Speak or move naturally for 10-30 seconds
+   - The red "REC" indicator shows recording is active
+   - Press **SPACE** again to stop recording
+   - Video is automatically saved with timestamp
+
+5. **Verify (using existing VeriLight tools):**
+   - Find your video in `recordings/recording_YYYYMMDD_HHMMSS.mp4`
+   - Process with VeriLight's verification pipeline to extract the embedded message
+   - The "hello world" message should be recoverable from the facial video
+
+### Tips for Best Results
+
+- **Lighting**: Use a darker environment so the screen pattern is more prominent
+- **Distance**: Sit 2-3 feet from the screen for optimal illumination
+- **Duration**: Record at least 10-15 seconds to capture multiple embedding cycles
+- **Movement**: Natural head movements are fine, but stay generally centered
+- **Camera**: Built-in laptop webcam works, but external camera may give better quality
 
 ## Comparison with Hardware VeriLight
 
@@ -106,14 +142,36 @@ For a typical 1920x1080 screen:
 - Bits per cell: 12 (4 seconds × 3 Hz)
 - **Total capacity: ~4,560 bits (~570 characters)**
 
+## Testing Your Setup
+
+Before recording a full session, verify everything works:
+
+```bash
+# Test camera detection
+python test_camera.py
+
+# Test encoding without display (unit tests)
+python test_screen_embedding.py
+```
+
+## File Overview
+
+- **screen_embedding.py** - Display only (no recording)
+- **screen_embedding_record.py** - Display + webcam recording ⭐ (recommended)
+- **test_screen_embedding.py** - Unit tests for encoding logic
+- **test_camera.py** - Test camera availability
+- **SCREEN_EMBEDDING.md** - This documentation
+
 ## Future Enhancements
 
 Possible improvements:
+- ✅ ~~Webcam preview and recording~~ (implemented!)
 - Integration with existing VeriLight verification pipeline
 - Adjustable brightness/colors for different lighting conditions
 - Multi-screen support for higher data rates
 - Real-time encoding of longer messages
-- Webcam preview to show what will be captured
+- Auto-detection of optimal screen brightness
+- Integration with facial feature extraction pipeline
 
 ## Notes
 

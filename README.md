@@ -67,6 +67,23 @@ Follow the steps below to prepare to use VeriLight code:
     pip install -r requirements.txt
     ```
 
+## Screen-Based Embedding (No Hardware Required!)
+
+Want to test VeriLight without building the full hardware setup? Try our **screen-based embedding** that uses just your laptop!
+
+```bash
+python screen_embedding_record.py
+```
+
+This simplified version:
+- ✅ Uses your laptop screen instead of an SLM projector
+- ✅ Records video with your webcam
+- ✅ Embeds "hello world" (or custom messages) using the same BPSK encoding
+- ✅ No additional hardware needed
+- ✅ Perfect for testing and demonstrations
+
+See [SCREEN_EMBEDDING.md](SCREEN_EMBEDDING.md) for complete documentation.
+
 ## Build and deploy a VeriLight core unit
 
 See [here](resources/core_unit_guide.md) for a guide on building a core unit and instructions on operating it at a speech.
